@@ -12,7 +12,9 @@
     "lint": "polymer lint export-panel.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"export-panel:local-test\"",
     "test": "polymer test --plugin local",
-    "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
+    "update-types": "gen-typescript-declarations --deleteExisting --outDir .",
+    "analyze": "polymer analyze -i export-panel.html > analysis.json",
+    "docs": "npm run update-types && npm run analyze"
   },
   "repository": {
     "type": "git",
