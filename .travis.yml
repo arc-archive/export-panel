@@ -1,22 +1,32 @@
 language: node_js
 node_js: stable
+sudo: required
 before_script:
-- bower install --silent
+  - npm install -g polymer-cli
+  - polymer install --variants
 addons:
+  firefox: latest
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
   sauce_connect: true
 script:
-- npm run lint
-- polymer test --plugin sauce --job-name "export-panel:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER}
+  - npm run lint
+  - xvfb-run polymer test --plugin local
+  - >-
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test --plugin sauce
+    --job-name "export-panel:${TRAVIS_BRANCH}"
+    --build-number=${TRAVIS_BUILD_NUMBER}; fi
 cache:
   directories:
-  - node_modules
-branches:
-  only:
-  - stage
-  - develop
+    - node_modules
 after_success:
-- node tasks/ci.js
+  - node tasks/ci.js
 env:
   global:
-  - secure: eUQvQ7z9W3fUf7/h0J7My3+8/qO0oHfXkb7vLTv7bpU6gknff7UUANxQsxGqiKx0UmV/Kw0tioQfC/OpNtuDgs+Y638PsEjxGWSAGGBx7D4GbidGqNrLmHnHqKZIU3NbJH1U4rfHhjMAiWf/5YRfqfCgfECaLS5sX5oc8O8gHsTFRSvyo3K9XV2achD/aWUCcRflDUtpNZo8qf80qZjgLL1c4C9uuiq9ib9mj8lqm686XfnDJMWcA8H5fqxiG6ZOGwaYTU2fUfddMkAx1r0v/uc8KQQBNInXHnbFqxlKOwgzMZ74aOZkDirf31fjTcWznVtMoCdKXX9fNK44KrS6gLCqR+WtdepGmNu4v8uJWaMH+jcmF3bwPCrF6Vlw+VwguncI2iBi/li9v7zyT5jCiFYM2XamRU9m6mNrAasEwDBA1aBRy9freMTc+tgiKS9Z7wGtk1uwySIzXA9vXTMoDb+4APgBaEU9oWzVjXDC5v+NcGVKPB9AY+qa7DOqNrkZOzJAHA3lqEi5sp15OS1Y7dBDx3nqnnJwKG11LFnmhbv2Nx4H/PegfEtLy1L87Y/AdVUBg2QNuBzfDabjIdtUHz/qOHWlankSCmOClSTQc777QQaHeFTKygdx0Cv7Z2qI18eufvhVvlTYZASb0nGpXFJYZibALoQsD8VvKhaK3OE=
-  - secure: CFYO2KSHOs9ofqXKuOKP52fY3SykD8R18o8DOCBe2OpzKCZ7ZiTnocL8fJBBkgpbAtls4oJkKRtAI5uJJNq0Id/PW5deFZnPuWaiMzB+wdTtgLAlCByuOp1fHCHuWBKhx/LLWNrK3nte44uY8ujfGTmCMXtLMU6QCJTiDED8fTF5a626xWV7B+BjQVaBwGuSn+g3DbJHg/mgnzQZ/U2lFikKQBN6h0+RRjFnjSZulZsI4j1/D6998JCa12B5+Fn1CrgSdKlCotZochw48/RvPhTIOS4auCiqjqGOH9PSBv+JpSxJSZH6JTIgUxRdqfGUEv3hNITIu8oY3bcGhkhF/AuMlDoXVj04XoWVLn+qhteKx30OHod8P5zmFxOsgDcZY50tDIXcsLEu5VFjE+Q/WTxLaVuOLXSTtn981PJMW/Yn5iRFgviB655ILNU0/sFbAW3tSa8Jl+tgp2ndkaUGKwATZcHjU1zapAWs4aphoOVXvqwVYPxcT/keDKbRfWxlbNuaYyFNwabWeEjmAa8uKHAVunALzvTctm96UC/wASqut4QZIxy6Fy5d7fVB3nsBJJEYFba9tcYiXWJsQmHqsVla2LGaGMxhiCPE6pxDoukyzv6mpISLoFDjsjNvLUJpicp7/vvYyUXQwXSR+6GiIMpUnPimL7B7KMuChVZSTBI=
+    - secure: >-
+        eUQvQ7z9W3fUf7/h0J7My3+8/qO0oHfXkb7vLTv7bpU6gknff7UUANxQsxGqiKx0UmV/Kw0tioQfC/OpNtuDgs+Y638PsEjxGWSAGGBx7D4GbidGqNrLmHnHqKZIU3NbJH1U4rfHhjMAiWf/5YRfqfCgfECaLS5sX5oc8O8gHsTFRSvyo3K9XV2achD/aWUCcRflDUtpNZo8qf80qZjgLL1c4C9uuiq9ib9mj8lqm686XfnDJMWcA8H5fqxiG6ZOGwaYTU2fUfddMkAx1r0v/uc8KQQBNInXHnbFqxlKOwgzMZ74aOZkDirf31fjTcWznVtMoCdKXX9fNK44KrS6gLCqR+WtdepGmNu4v8uJWaMH+jcmF3bwPCrF6Vlw+VwguncI2iBi/li9v7zyT5jCiFYM2XamRU9m6mNrAasEwDBA1aBRy9freMTc+tgiKS9Z7wGtk1uwySIzXA9vXTMoDb+4APgBaEU9oWzVjXDC5v+NcGVKPB9AY+qa7DOqNrkZOzJAHA3lqEi5sp15OS1Y7dBDx3nqnnJwKG11LFnmhbv2Nx4H/PegfEtLy1L87Y/AdVUBg2QNuBzfDabjIdtUHz/qOHWlankSCmOClSTQc777QQaHeFTKygdx0Cv7Z2qI18eufvhVvlTYZASb0nGpXFJYZibALoQsD8VvKhaK3OE=
+    - secure: >-
+        CFYO2KSHOs9ofqXKuOKP52fY3SykD8R18o8DOCBe2OpzKCZ7ZiTnocL8fJBBkgpbAtls4oJkKRtAI5uJJNq0Id/PW5deFZnPuWaiMzB+wdTtgLAlCByuOp1fHCHuWBKhx/LLWNrK3nte44uY8ujfGTmCMXtLMU6QCJTiDED8fTF5a626xWV7B+BjQVaBwGuSn+g3DbJHg/mgnzQZ/U2lFikKQBN6h0+RRjFnjSZulZsI4j1/D6998JCa12B5+Fn1CrgSdKlCotZochw48/RvPhTIOS4auCiqjqGOH9PSBv+JpSxJSZH6JTIgUxRdqfGUEv3hNITIu8oY3bcGhkhF/AuMlDoXVj04XoWVLn+qhteKx30OHod8P5zmFxOsgDcZY50tDIXcsLEu5VFjE+Q/WTxLaVuOLXSTtn981PJMW/Yn5iRFgviB655ILNU0/sFbAW3tSa8Jl+tgp2ndkaUGKwATZcHjU1zapAWs4aphoOVXvqwVYPxcT/keDKbRfWxlbNuaYyFNwabWeEjmAa8uKHAVunALzvTctm96UC/wASqut4QZIxy6Fy5d7fVB3nsBJJEYFba9tcYiXWJsQmHqsVla2LGaGMxhiCPE6pxDoukyzv6mpISLoFDjsjNvLUJpicp7/vvYyUXQwXSR+6GiIMpUnPimL7B7KMuChVZSTBI=
