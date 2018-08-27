@@ -5,17 +5,26 @@
  *   https://github.com/Polymer/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   export-panel.html
+ *   export-form.html
  */
 
 /// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../paper-styles/shadow.d.ts" />
-/// <reference path="export-form.d.ts" />
+/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
+/// <reference path="../paper-toast/paper-toast.d.ts" />
+/// <reference path="../arc-icons/arc-icons.d.ts" />
+/// <reference path="../iron-form/iron-form.d.ts" />
+/// <reference path="../paper-checkbox/paper-checkbox.d.ts" />
+/// <reference path="../paper-dropdown-menu/paper-dropdown-menu.d.ts" />
+/// <reference path="../paper-listbox/paper-listbox.d.ts" />
+/// <reference path="../paper-item/paper-icon-item.d.ts" />
+/// <reference path="../iron-icon/iron-icon.d.ts" />
+/// <reference path="../paper-button/paper-button.d.ts" />
+/// <reference path="../paper-spinner/paper-spinner.d.ts" />
 
 declare namespace UiElements {
 
   /**
-   * Data export panel for Advanced REST Client.
+   * Export data form with export flow logic.
    *
    * Provides the UI and and logic to export data from the data store to `destination`
    * export method provider. It uses events API to communicate with other elements.
@@ -48,7 +57,7 @@ declare namespace UiElements {
    * `--warning-contrast-color` | Error toast color | `#fff`
    * `--arc-font-headline` | Mixin applied to the header | `{}`
    */
-  class ExportPanel extends Polymer.Element {
+  class ExportForm extends Polymer.Element {
 
     /**
      * Export destination:
@@ -58,12 +67,31 @@ declare namespace UiElements {
     destination: number|null|undefined;
 
     /**
+     * When `true` the component began export flow.
+     */
+    readonly loading: boolean|null|undefined;
+
+    /**
      * When set this value will be used for export file name.
      */
     fileName: string|null|undefined;
+
+    /**
+     * Handler for click event. Calls `startExport()` function.
+     */
+    _prepare(): void;
+
+    /**
+     * Uses currend form data to start export flow.
+     * This function is to expose public API to export data.
+     *
+     * @returns A promise resolved when export finishes
+     */
+    startExport(): Promise<any>|null;
+    _getExportFileName(): any;
   }
 }
 
 interface HTMLElementTagNameMap {
-  "export-panel": UiElements.ExportPanel;
+  "export-form": UiElements.ExportForm;
 }
