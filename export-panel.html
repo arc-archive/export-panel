@@ -13,18 +13,7 @@ the License.
 -->
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-styles/shadow.html">
-<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../paper-toast/paper-toast.html">
-<link rel="import" href="../arc-icons/arc-icons.html">
-<link rel="import" href="../iron-form/iron-form.html">
-<link rel="import" href="../paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-item/paper-icon-item.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../paper-spinner/paper-spinner.html">
-
+<link rel="import" href="export-form.html">
 <dom-module id="export-panel">
   <template>
     <style>
@@ -39,98 +28,11 @@ the License.
       color: var(--arc-settings-panel-header-color);
       @apply --arc-settings-panel-header;
     }
-
-    h3 {
-      @apply --arc-font-subhead;
-      font-size: 14px;
-    }
-
-    .card {
-      padding: 12px;
-      border-radius: 4px;
-      @apply --shadow-elevation-4dp;
-    }
-
-    .error-toast {
-      background-color: var(--warning-primary-color, #FF7043);
-      color: var(--warning-contrast-color, #fff);
-      @apply --error-toast;
-    }
-
-    .menu-item {
-      cursor: pointer;
-      color: var(--context-menu-color, rgba(0, 0, 0, 0.87));
-    }
-    .menu-item:not(:focus):hover {
-      color: var(--context-menu-color-hover, currentcolor);
-      background-color: var(--context-menu-background-color-hover, rgba(0, 0, 0, 0.12));
-    }
-    .menu-item:not(:focus):hover iron-icon {
-      color: var(--context-menu-color-hover, currentcolor);
-    }
-
-    paper-checkbox {
-      margin: 12px 0px;
-      display: block;
-    }
-
-    .prepare-info {
-      font-size: 15px;
-      margin-top: 24px;
-      @apply --export-data-selector-prepare-intro;
-    }
-
-    .actions {
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      margin-top: 24px;
-    }
-
-    .action-button:not([disabled]) {
-      background-color: var(--primary-color);
-      color: #fff;
-
-    }
-
-    .action-button {
-      margin-right: 8px;
-      @apply --export-data-selector-action-button;
-    }
     </style>
     <h2>Export data</h2>
     <section class="card">
-      <paper-dropdown-menu label="Export location">
-        <paper-listbox slot="dropdown-content" selected="{{destination}}">
-          <paper-icon-item class="menu-item" data-action="export-all-file">
-            <iron-icon icon="arc:archive" slot="item-icon"></iron-icon>
-            Export to file
-          </paper-icon-item>
-          <paper-icon-item class="menu-item" data-action="export-all-drive">
-            <iron-icon icon="arc:drive-color" slot="item-icon"></iron-icon>
-            Export to Google Drive
-          </paper-icon-item>
-        </paper-listbox>
-      </paper-dropdown-menu>
-      <h3>Data to export</h3>
-      <iron-form id="form">
-        <form enctype="application/json">
-          <paper-checkbox name="saved" checked>Projects and saved request list</paper-checkbox>
-          <paper-checkbox name="history" checked>Requests history</paper-checkbox>
-          <paper-checkbox name="cookies" checked>Cookies</paper-checkbox>
-          <paper-checkbox name="auth" checked>Saved passwords</paper-checkbox>
-          <paper-checkbox name="url-history" checked>URL history</paper-checkbox>
-          <paper-checkbox name="websocket" checked>Web sockets history</paper-checkbox>
-          <paper-checkbox name="variables" checked>Variables data</paper-checkbox>
-        </form>
-      </iron-form>
-      <div class="actions">
-        <paper-button class="action-button" disabled="[[loading]]" raised on-click="_prepare">Export</paper-button>
-        <paper-spinner active="[[loading]]"></paper-spinner>
-      </div>
-      <p class="prepare-info">Depending on the data size it may take a minute</p>
+      <export-form destination="[[destination]]" file-name="[[fileName]]"></export-form>
     </section>
-    <paper-toast id="exportError" class="error-toast"></paper-toast>
-    <paper-toast id="exportComplete" text="Export complete"></paper-toast>
   </template>
   <script>
   /**
@@ -183,58 +85,11 @@ the License.
          */
         destination: {type: Number, value: 0},
         /**
-         * When `true` the component began export flow.
-         */
-        loading: {type: Boolean, readOnly: true},
-        /**
          * When set this value will be used for export file name.
          */
         fileName: String
       };
     }
-
-    _prepare() {
-      let data = this.$.form.serializeForm();
-      Object.keys(data).forEach((key) => {
-        data[key] = true;
-      });
-      const destination = this.destination === 0 ? 'file' : 'drive';
-      const e = new CustomEvent('export-data', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          file: this.fileName || this._getExportFileName(),
-          type: 'arc-export',
-          destination,
-          data
-        }
-      });
-      this.dispatchEvent(e);
-      if (!e.detail.result) {
-        throw new Error('Export event not handled');
-      }
-      this._setLoading(true);
-      e.detail.result
-      .then(() => {
-        this.$.exportComplete.opened = true;
-      })
-      .catch((cause) => {
-        this.$.exportError.text = cause.message;
-        this.$.exportError.opened = true;
-      })
-      .then(() => {
-        this._setLoading(false);
-      });
-    }
-
-    _getExportFileName() {
-      const date = new Date();
-      const day = date.getDate();
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      return `arc-data-export-${day}-${month}-${year}.json`;
-    }
-
     /**
      * @event export-data
      * @param {String} file
