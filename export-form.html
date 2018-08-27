@@ -183,6 +183,17 @@ the License.
       this.startExport();
     }
     /**
+     * Selects all items on the list.
+     */
+    selectAll() {
+      const nodes = this.shadowRoot.querySelector('form paper-checkbox');
+      for (let i = 0, len = nodes.length; i < len; i++) {
+        if (!nodes[i].checked) {
+          nodes[i].checked = true;
+        }
+      }
+    }
+    /**
      * Uses currend form data to start export flow.
      * This function is to expose public API to export data.
      *
