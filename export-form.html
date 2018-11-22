@@ -44,16 +44,23 @@ the License.
       @apply --error-toast;
     }
 
-    .menu-item {
+    paper-listbox iron-icon {
+      color: var(--context-menu-item-color);
+    }
+
+    paper-listbox paper-icon-item {
+      color: var(--context-menu-item-color);
+      background-color: var(--context-menu-item-background-color);
       cursor: pointer;
-      color: var(--context-menu-color, rgba(0, 0, 0, 0.87));
     }
-    .menu-item:not(:focus):hover {
-      color: var(--context-menu-color-hover, currentcolor);
-      background-color: var(--context-menu-background-color-hover, rgba(0, 0, 0, 0.12));
+
+    paper-listbox paper-icon-item:hover {
+      color: var(--context-menu-item-color-hover);
+      background-color: var(--context-menu-item-background-color-hover);
     }
-    .menu-item:not(:focus):hover iron-icon {
-      color: var(--context-menu-color-hover, currentcolor);
+
+    paper-listbox paper-icon-item:hover iron-icon {
+      color: var(--context-menu-item-color-hover);
     }
 
     paper-checkbox {
@@ -74,28 +81,41 @@ the License.
     }
 
     .action-button:not([disabled]) {
-      background-color: var(--primary-color);
-      color: #fff;
-
+      background-color: var(--export-form-action-button-background-color, var(--primary-color));
+      color: var(--export-form-action-button-color, #fff);
     }
 
     .action-button {
       margin-right: 8px;
       @apply --export-data-selector-action-button;
     }
+
+    .inline-config {
+      @apply --layout-horizontal;
+      @apply --layout-center;
+      @apply --layout-wrap;
+    }
+
+    .destination-dropdown {
+      margin-right: 8px;
+    }
     </style>
-    <paper-dropdown-menu label="Export location">
-      <paper-listbox slot="dropdown-content" selected="{{destination}}">
-        <paper-icon-item class="menu-item" data-action="export-all-file">
-          <iron-icon icon="arc:archive" slot="item-icon"></iron-icon>
-          Export to file
-        </paper-icon-item>
-        <paper-icon-item class="menu-item" data-action="export-all-drive">
-          <iron-icon icon="arc:drive-color" slot="item-icon"></iron-icon>
-          Export to Google Drive
-        </paper-icon-item>
-      </paper-listbox>
-    </paper-dropdown-menu>
+    <section class="inline-config">
+      <paper-dropdown-menu label="Export location" class="destination-dropdown">
+        <paper-listbox slot="dropdown-content" selected="{{destination}}">
+          <paper-icon-item class="menu-item" data-action="export-all-file">
+            <iron-icon icon="arc:archive" slot="item-icon"></iron-icon>
+            Export to file
+          </paper-icon-item>
+          <paper-icon-item class="menu-item" data-action="export-all-drive">
+            <iron-icon icon="arc:drive-color" slot="item-icon"></iron-icon>
+            Export to Google Drive
+          </paper-icon-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <paper-input label="File name" value="{{fileName}}"></paper-input>
+    </section>
     <h3>Data to export</h3>
     <iron-form id="form">
       <form enctype="application/json">
@@ -150,6 +170,12 @@ the License.
    * `--warning-primary-color` | Error toast background color | `#FF7043`
    * `--warning-contrast-color` | Error toast color | `#fff`
    * `--arc-font-headline` | Mixin applied to the header | `{}`
+   * `--context-menu-item-color` | Color of the dropdown menu items | ``
+   * `--context-menu-item-background-color` | Background olor of the dropdown menu items | ``
+   * `--context-menu-item-color-hover` | Color of the dropdown menu items when hovering | ``
+   * `--context-menu-item-background-color-hover` | Background olor of the dropdown menu items when hovering | ``
+   * `--export-form-action-button-color` | Color of the export button | `#fff`
+   * `--export-form-action-button-background-color` | Background color of the export button | `--primary-color`
    *
    * @customElement
    * @polymer
@@ -173,7 +199,12 @@ the License.
         /**
          * When set this value will be used for export file name.
          */
-        fileName: String
+        fileName: {
+          type: String,
+          value: function() {
+            return this._getExportFileName();
+          }
+        }
       };
     }
     /**
