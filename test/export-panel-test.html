@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>export-panel test</title>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../export-form.html">
+</head>
+<body>
+  <test-fixture id="Basic">
+    <template>
+      <export-form></export-form>
+    </template>
+  </test-fixture>
+
+  <script>
+  suite('export-panel', () => {
+    let element;
+    setup((done) => {
+      element = fixture('Basic');
+      flush(() => done());
+    });
+
+    test('Dispatches the event with data', (done) => {
+      element.addEventListener('export-data', (e) => {
+        assert.isTrue(e.bubbles, 'Event bubbles');
+        assert.typeOf(e.detail.file, 'string');
+        assert.equal(e.detail.destination, 'file');
+        assert.equal(e.detail.type, 'arc-export');
+        assert.typeOf(e.detail.data, 'object');
+        e.detail.result = Promise.resolve();
+        done();
+      });
+      const node = element.shadowRoot.querySelector('.action-button');
+      node.click();
+    });
+
+    test('Event contains selected data', (done) => {
+      element.addEventListener('export-data', (e) => {
+        const types = e.detail.data;
+        assert.isTrue(types.saved);
+        assert.isTrue(types.history);
+        assert.isTrue(types.cookies);
+        assert.isTrue(types.auth);
+        assert.isTrue(types['url-history']);
+        assert.isTrue(types.websocket);
+        assert.isTrue(types.variables);
+        e.detail.result = Promise.resolve();
+        done();
+      });
+      const node = element.shadowRoot.querySelector('.action-button');
+      node.click();
+    });
+
+    test('Exports to drive', (done) => {
+      element.destination = 1;
+      element.addEventListener('export-data', (e) => {
+        assert.equal(e.detail.destination, 'drive');
+        e.detail.result = Promise.resolve();
+        done();
+      });
+      const node = element.shadowRoot.querySelector('.action-button');
+      node.click();
+    });
+
+    test('Sets loading flag', () => {
+      element.addEventListener('export-data', (e) => {
+        e.detail.result = new Promise((resolve) => {
+          setTimeout(() => resolve(), 1);
+        });
+      });
+      const node = element.shadowRoot.querySelector('.action-button');
+      node.click();
+      assert.isTrue(element.loading);
+    });
+
+    test('Re-sets loading flag', (done) => {
+      element.addEventListener('export-data', (e) => {
+        e.detail.result = new Promise((resolve) => {
+          setTimeout(() => resolve(), 1);
+          setTimeout(() => {
+            assert.isFalse(element.loading);
+            done();
+          }, 2);
+        });
+      });
+      const node = element.shadowRoot.querySelector('.action-button');
+      node.click();
+    });
+
+    test('Selects all items', () => {
+      const nodes = element.shadowRoot.querySelectorAll('form paper-checkbox');
+      nodes[0].checked = false;
+      nodes[2].checked = false;
+      element.selectAll();
+      for (let i = 0, len = nodes.length; i < len; i++) {
+        assert.isTrue(nodes[i].checked);
+      }
+    });
+  });
+  </script>
+</body>
+</html>
