@@ -89,6 +89,16 @@
       const node = element.shadowRoot.querySelector('.action-button');
       node.click();
     });
+
+    test('Selects all items', () => {
+      const nodes = element.shadowRoot.querySelectorAll('form paper-checkbox');
+      nodes[0].checked = false;
+      nodes[2].checked = false;
+      element.selectAll();
+      for (let i = 0, len = nodes.length; i < len; i++) {
+        assert.isTrue(nodes[i].checked);
+      }
+    });
   });
   </script>
 </body>

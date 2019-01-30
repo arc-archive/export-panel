@@ -217,7 +217,7 @@ the License.
      * Selects all items on the list.
      */
     selectAll() {
-      const nodes = this.shadowRoot.querySelector('form paper-checkbox');
+      const nodes = this.shadowRoot.querySelectorAll('form paper-checkbox');
       for (let i = 0, len = nodes.length; i < len; i++) {
         if (!nodes[i].checked) {
           nodes[i].checked = true;
