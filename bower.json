@@ -39,7 +39,7 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^2.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
-    "arc-data-export": "advanced-rest-client/arc-data-export#2.0.0-preview",
+    "arc-data-export": "advanced-rest-client/arc-data-export#^2.0.0",
     "app-pouchdb": "PolymerElements/app-pouchdb#^2.1.1",
     "web-animations-js": "web-animations/web-animations-js#^2.3",
     "arc-electron-default-theme": "advanced-rest-client/arc-electron-default-theme#2.0.0-preview"
