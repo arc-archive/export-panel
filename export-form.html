@@ -48,13 +48,17 @@ the License.
       color: var(--context-menu-item-color);
     }
 
-    paper-listbox paper-icon-item {
+    paper-listbox paper-icon-item,
+    .list ::slotted(paper-icon-item),
+    .list ::slotted(.menu-item) {
       color: var(--context-menu-item-color);
       background-color: var(--context-menu-item-background-color);
       cursor: pointer;
     }
 
-    paper-listbox paper-icon-item:hover {
+    paper-listbox paper-icon-item:hover,
+    .list ::slotted(paper-icon-item):hover,
+    .list ::slotted(.menu-item):hover {
       color: var(--context-menu-item-color-hover);
       background-color: var(--context-menu-item-background-color-hover);
     }
@@ -102,15 +106,16 @@ the License.
     </style>
     <section class="inline-config">
       <paper-dropdown-menu label="Export location" class="destination-dropdown">
-        <paper-listbox slot="dropdown-content" selected="{{destination}}">
-          <paper-icon-item class="menu-item" data-action="export-all-file">
+        <paper-listbox slot="dropdown-content" selected="{{destination}}" class="list" attr-for-selected="data-value">
+          <paper-icon-item class="menu-item" data-action="export-all-file" data-value="file">
             <iron-icon icon="arc:archive" slot="item-icon"></iron-icon>
             Export to file
           </paper-icon-item>
-          <paper-icon-item class="menu-item" data-action="export-all-drive">
+          <paper-icon-item class="menu-item" data-action="export-all-drive" data-value="drive">
             <iron-icon icon="arc:drive-color" slot="item-icon"></iron-icon>
             Export to Google Drive
           </paper-icon-item>
+          <slot name="destination"></slot>
         </paper-listbox>
       </paper-dropdown-menu>
 
@@ -188,11 +193,10 @@ the License.
     static get properties() {
       return {
         /**
-         * Export destination:
-         * - 0 - to file
-         * - 1 - to Google Drive
+         * Export destination name.
+         * By default it can be `file` or `drive`.
          */
-        destination: {type: Number, value: 0},
+        destination: {type: String, value: 'file'},
         /**
          * When `true` the component began export flow.
          */
@@ -232,22 +236,11 @@ the License.
      * @return {Promise} A promise resolved when export finishes
      */
     startExport() {
-      let data = this.$.form.serializeForm();
+      const data = this.$.form.serializeForm();
       Object.keys(data).forEach((key) => {
         data[key] = true;
       });
-      const destination = this.destination === 0 ? 'file' : 'drive';
-      const e = new CustomEvent('export-data', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          file: this.fileName || this._getExportFileName(),
-          type: 'arc-export',
-          destination,
-          data
-        }
-      });
-      this.dispatchEvent(e);
+      const e = this._dispatchExport(data);
       if (!e.detail.result) {
         throw new Error('Export event not handled');
       }
@@ -255,19 +248,41 @@ the License.
       return e.detail.result
       .then((result) => {
         this.$.exportComplete.opened = true;
+        this._setLoading(false);
         return result;
       })
       .catch((cause) => {
         this.$.exportError.text = cause.message;
         this.$.exportError.opened = true;
-        throw cause;
-      })
-      .then((result) => {
         this._setLoading(false);
-        return result;
+        throw cause;
       });
     }
-
+    /**
+     * Dispatches `export-data` custom event.
+     * The event is handled by `arc-data-export` element.
+     *
+     * @param {Object} data List of deta stores to use in export.
+     * @return {CustomEvent}
+     */
+    _dispatchExport(data) {
+      const e = new CustomEvent('export-data', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          file: this.fileName || this._getExportFileName(),
+          type: 'arc-export',
+          destination: this.destination,
+          data
+        }
+      });
+      this.dispatchEvent(e);
+      return e;
+    }
+    /**
+     * Generates default export name value.
+     * @return {String}
+     */
     _getExportFileName() {
       const date = new Date();
       const day = date.getDate();

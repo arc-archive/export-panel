@@ -67,6 +67,16 @@
       <div class="vertical-section-container centered" card>
         <export-panel></export-panel>
       </div>
+
+      <div class="vertical-section-container centered" card>
+        <h2>Additional destinations</h2>
+        <export-panel>
+          <paper-icon-item data-value="my-destination" slot="destination">
+            <iron-icon icon="arc:add" slot="item-icon"></iron-icon>
+            Export to my destination
+          </paper-icon-item>
+        </export-panel>
+      </div>
       <paper-toast text="Drive export requested" id="driveToast"></paper-toast>
       <paper-toast text="File export requested" id="fileToast"></paper-toast>
     </template>
