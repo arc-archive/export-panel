@@ -55,7 +55,7 @@
     });
 
     test('Exports to drive', (done) => {
-      element.destination = 1;
+      element.destination = 'drive';
       element.addEventListener('export-data', (e) => {
         assert.equal(e.detail.destination, 'drive');
         e.detail.result = Promise.resolve();
@@ -98,6 +98,129 @@
       for (let i = 0, len = nodes.length; i < len; i++) {
         assert.isTrue(nodes[i].checked);
       }
+    });
+  });
+
+  suite('_dispatchExport()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+    });
+
+    test('Dispatches export-data event', () => {
+      const spy = sinon.spy();
+      element.addEventListener('export-data', spy);
+      element._dispatchExport();
+      assert.isTrue(spy.called);
+    });
+
+    test('Returns the event', () => {
+      const e = element._dispatchExport();
+      assert.typeOf(e, 'customevent');
+      assert.equal(e.type, 'export-data');
+    });
+
+    test('Event bubbles', () => {
+      const e = element._dispatchExport();
+      assert.isTrue(e.bubbles);
+    });
+
+    test('Event has data', () => {
+      const data = {
+        saved: true
+      };
+      const e = element._dispatchExport(data);
+      assert.deepEqual(e.detail.data, data);
+    });
+
+    test('Generates file name when missing', () => {
+      const data = {
+        saved: true
+      };
+      element.fileName = undefined;
+      const e = element._dispatchExport(data);
+      assert.typeOf(e.detail.file, 'string');
+    });
+  });
+
+  suite('startExport()', () => {
+    let element;
+    setup((done) => {
+      element = fixture('Basic');
+      flush(() => done());
+    });
+
+    function handler(e) {
+      e.preventDefault();
+      e.detail.result = Promise.resolve({test: true});
+    }
+
+    function errorHandler(e) {
+      e.preventDefault();
+      e.detail.result = Promise.reject(new Error('test-error'));
+    }
+
+    teardown(() => {
+      window.removeEventListener('export-data', handler);
+      window.removeEventListener('export-data', errorHandler);
+    });
+
+    test('Throws when export event not handled', () => {
+      assert.throws(() => {
+        element.startExport();
+      });
+    });
+
+    test('Returns a promise', () => {
+      window.addEventListener('export-data', handler);
+      const result = element.startExport();
+      assert.typeOf(result.then, 'function');
+      return result;
+    });
+
+    test('Sets loading state', () => {
+      window.addEventListener('export-data', handler);
+      const result = element.startExport();
+      assert.isTrue(element.loading);
+      return result;
+    });
+
+    test('Promise results to data returned by the export processor', () => {
+      window.addEventListener('export-data', handler);
+      return element.startExport()
+      .then((data) => {
+        assert.deepEqual(data, {test: true});
+      });
+    });
+
+    test('Resets exportComplete flag', () => {
+      window.addEventListener('export-data', handler);
+      return element.startExport()
+      .then(() => {
+        assert.isFalse(element.loading);
+      });
+    });
+
+    test('Opens exportError on error', () => {
+      window.addEventListener('export-data', errorHandler);
+      return element.startExport()
+      .then(() => {
+        throw new Error('Should not resolve.');
+      })
+      .catch((cause) => {
+        assert.typeOf(cause.message, 'string');
+        assert.equal(cause.message, 'test-error');
+        assert.isTrue(element.$.exportError.opened);
+        assert.equal(element.$.exportError.text, 'test-error');
+      });
+    });
+
+    test('Resets exportComplete flag on error', () => {
+      window.addEventListener('export-data', errorHandler);
+      return element.startExport()
+      .catch(() => {
+        assert.isFalse(element.loading);
+      });
     });
   });
   </script>
