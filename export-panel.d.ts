@@ -54,11 +54,10 @@ declare namespace UiElements {
   class ExportPanel extends Polymer.Element {
 
     /**
-     * Export destination:
-     * - 0 - to file
-     * - 1 - to Google Drive
+     * Export destination name.
+     * By default it can be `file` or `drive`.
      */
-    destination: number|null|undefined;
+    destination: string|null|undefined;
 
     /**
      * When set this value will be used for export file name.

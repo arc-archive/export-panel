@@ -606,25 +606,25 @@
         },
         {
           "name": "destination",
-          "type": "number | null | undefined",
-          "description": "Export destination:\n- 0 - to file\n- 1 - to Google Drive",
+          "type": "string | null | undefined",
+          "description": "Export destination name.\nBy default it can be `file` or `drive`.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 193,
+              "line": 198,
               "column": 8
             },
             "end": {
-              "line": 193,
-              "column": 45
+              "line": 198,
+              "column": 50
             }
           },
           "metadata": {
             "polymer": {
-              "attributeType": "Number"
+              "attributeType": "String"
             }
           },
-          "defaultValue": "0"
+          "defaultValue": "\"file\""
         },
         {
           "name": "loading",
@@ -633,11 +633,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 197,
+              "line": 202,
               "column": 8
             },
             "end": {
-              "line": 197,
+              "line": 202,
               "column": 48
             }
           },
@@ -655,11 +655,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 201,
+              "line": 206,
               "column": 8
             },
             "end": {
-              "line": 206,
+              "line": 211,
               "column": 9
             }
           },
@@ -2893,11 +2893,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 212,
+              "line": 217,
               "column": 4
             },
             "end": {
-              "line": 214,
+              "line": 219,
               "column": 5
             }
           },
@@ -2913,11 +2913,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 218,
+              "line": 223,
               "column": 4
             },
             "end": {
-              "line": 225,
+              "line": 230,
               "column": 5
             }
           },
@@ -2933,11 +2933,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 232,
+              "line": 237,
               "column": 4
             },
             "end": {
-              "line": 267,
+              "line": 259,
               "column": 5
             }
           },
@@ -2949,21 +2949,50 @@
           }
         },
         {
-          "name": "_getExportFileName",
-          "description": "",
+          "name": "_dispatchExport",
+          "description": "Dispatches `export-data` custom event.\nThe event is handled by `arc-data-export` element.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 269,
+              "line": 267,
               "column": 4
             },
             "end": {
-              "line": 275,
+              "line": 280,
               "column": 5
             }
           },
           "metadata": {},
-          "params": []
+          "params": [
+            {
+              "name": "data",
+              "type": "Object",
+              "description": "List of deta stores to use in export."
+            }
+          ],
+          "return": {
+            "type": "CustomEvent"
+          }
+        },
+        {
+          "name": "_getExportFileName",
+          "description": "Generates default export name value.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 4
+            },
+            "end": {
+              "line": 291,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "String"
+          }
         }
       ],
       "staticMethods": [
@@ -3932,11 +3961,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 184,
+          "line": 190,
           "column": 2
         },
         "end": {
-          "line": 284,
+          "line": 300,
           "column": 3
         }
       },
@@ -3946,30 +3975,30 @@
       "attributes": [
         {
           "name": "destination",
-          "description": "Export destination:\n- 0 - to file\n- 1 - to Google Drive",
+          "description": "Export destination name.\nBy default it can be `file` or `drive`.",
           "sourceRange": {
             "start": {
-              "line": 193,
+              "line": 198,
               "column": 8
             },
             "end": {
-              "line": 193,
-              "column": 45
+              "line": 198,
+              "column": 50
             }
           },
           "metadata": {},
-          "type": "number | null | undefined"
+          "type": "string | null | undefined"
         },
         {
           "name": "loading",
           "description": "When `true` the component began export flow.",
           "sourceRange": {
             "start": {
-              "line": 197,
+              "line": 202,
               "column": 8
             },
             "end": {
-              "line": 197,
+              "line": 202,
               "column": 48
             }
           },
@@ -3981,11 +4010,11 @@
           "description": "When set this value will be used for export file name.",
           "sourceRange": {
             "start": {
-              "line": 201,
+              "line": 206,
               "column": 8
             },
             "end": {
-              "line": 206,
+              "line": 211,
               "column": 9
             }
           },
@@ -4005,7 +4034,22 @@
         "cssVariables": [],
         "selectors": []
       },
-      "slots": [],
+      "slots": [
+        {
+          "description": "",
+          "name": "destination",
+          "range": {
+            "start": {
+              "line": 117,
+              "column": 10
+            },
+            "end": {
+              "line": 117,
+              "column": 42
+            }
+          }
+        }
+      ],
       "tagname": "export-form"
     },
     {
@@ -4613,25 +4657,24 @@
         },
         {
           "name": "destination",
-          "type": "number | null | undefined",
-          "description": "Export destination:\n- 0 - to file\n- 1 - to Google Drive",
+          "type": "string | null | undefined",
+          "description": "Export destination name.\nBy default it can be `file` or `drive`.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 85,
+              "line": 87,
               "column": 8
             },
             "end": {
-              "line": 85,
-              "column": 45
+              "line": 87,
+              "column": 27
             }
           },
           "metadata": {
             "polymer": {
-              "attributeType": "Number"
+              "attributeType": "String"
             }
-          },
-          "defaultValue": "0"
+          }
         },
         {
           "name": "fileName",
@@ -4640,11 +4683,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 89,
+              "line": 91,
               "column": 8
             },
             "end": {
-              "line": 89,
+              "line": 91,
               "column": 24
             }
           },
@@ -7839,11 +7882,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 76,
+          "line": 79,
           "column": 2
         },
         "end": {
-          "line": 99,
+          "line": 101,
           "column": 3
         }
       },
@@ -7853,30 +7896,30 @@
       "attributes": [
         {
           "name": "destination",
-          "description": "Export destination:\n- 0 - to file\n- 1 - to Google Drive",
+          "description": "Export destination name.\nBy default it can be `file` or `drive`.",
           "sourceRange": {
             "start": {
-              "line": 85,
+              "line": 87,
               "column": 8
             },
             "end": {
-              "line": 85,
-              "column": 45
+              "line": 87,
+              "column": 27
             }
           },
           "metadata": {},
-          "type": "number | null | undefined"
+          "type": "string | null | undefined"
         },
         {
           "name": "file-name",
           "description": "When set this value will be used for export file name.",
           "sourceRange": {
             "start": {
-              "line": 89,
+              "line": 91,
               "column": 8
             },
             "end": {
-              "line": 89,
+              "line": 91,
               "column": 24
             }
           },
@@ -7896,7 +7939,22 @@
         "cssVariables": [],
         "selectors": []
       },
-      "slots": [],
+      "slots": [
+        {
+          "description": "",
+          "name": "destination",
+          "range": {
+            "start": {
+              "line": 35,
+              "column": 8
+            },
+            "end": {
+              "line": 35,
+              "column": 59
+            }
+          }
+        }
+      ],
       "tagname": "export-panel"
     }
   ]

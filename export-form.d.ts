@@ -70,11 +70,10 @@ declare namespace UiElements {
   class ExportForm extends Polymer.Element {
 
     /**
-     * Export destination:
-     * - 0 - to file
-     * - 1 - to Google Drive
+     * Export destination name.
+     * By default it can be `file` or `drive`.
      */
-    destination: number|null|undefined;
+    destination: string|null|undefined;
 
     /**
      * When `true` the component began export flow.
@@ -103,7 +102,19 @@ declare namespace UiElements {
      * @returns A promise resolved when export finishes
      */
     startExport(): Promise<any>|null;
-    _getExportFileName(): any;
+
+    /**
+     * Dispatches `export-data` custom event.
+     * The event is handled by `arc-data-export` element.
+     *
+     * @param data List of deta stores to use in export.
+     */
+    _dispatchExport(data: object|null): CustomEvent|null;
+
+    /**
+     * Generates default export name value.
+     */
+    _getExportFileName(): String|null;
   }
 }
 
