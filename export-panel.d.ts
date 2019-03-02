@@ -5,15 +5,15 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   export-panel.html
+ *   export-panel.js
  */
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../paper-styles/shadow.d.ts" />
-/// <reference path="export-form.d.ts" />
+import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
 declare namespace UiElements {
 
@@ -51,7 +51,7 @@ declare namespace UiElements {
    * `--warning-contrast-color` | Error toast color | `#fff`
    * `--arc-font-headline` | Mixin applied to the header | `{}`
    */
-  class ExportPanel extends Polymer.Element {
+  class ExportPanel extends PolymerElement {
 
     /**
      * Export destination name.
@@ -66,6 +66,9 @@ declare namespace UiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "export-panel": UiElements.ExportPanel;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "export-panel": UiElements.ExportPanel;
+  }
 }
