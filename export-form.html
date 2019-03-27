@@ -189,7 +189,9 @@ the License.
    * @demo demo/index.html
    */
   class ExportForm extends Polymer.Element {
-    static get is() {return 'export-form';}
+    static get is() {
+      return 'export-form';
+    }
     static get properties() {
       return {
         /**
@@ -266,13 +268,15 @@ the License.
      * @return {CustomEvent}
      */
     _dispatchExport(data) {
-      const e = new CustomEvent('export-data', {
+      const options = {
+        provider: this.destination,
+        file: this.fileName || this._getExportFileName(),
+      };
+      const e = new CustomEvent('arc-data-export', {
         bubbles: true,
         composed: true,
         detail: {
-          file: this.fileName || this._getExportFileName(),
-          type: 'arc-export',
-          destination: this.destination,
+          options,
           data
         }
       });

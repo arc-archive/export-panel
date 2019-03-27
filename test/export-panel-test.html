@@ -24,11 +24,11 @@
     });
 
     test('Dispatches the event with data', (done) => {
-      element.addEventListener('export-data', (e) => {
+      element.addEventListener('arc-data-export', (e) => {
         assert.isTrue(e.bubbles, 'Event bubbles');
-        assert.typeOf(e.detail.file, 'string');
-        assert.equal(e.detail.destination, 'file');
-        assert.equal(e.detail.type, 'arc-export');
+        assert.typeOf(e.detail.options, 'object');
+        assert.typeOf(e.detail.options.file, 'string');
+        assert.equal(e.detail.options.provider, 'file');
         assert.typeOf(e.detail.data, 'object');
         e.detail.result = Promise.resolve();
         done();
@@ -38,7 +38,7 @@
     });
 
     test('Event contains selected data', (done) => {
-      element.addEventListener('export-data', (e) => {
+      element.addEventListener('arc-data-export', (e) => {
         const types = e.detail.data;
         assert.isTrue(types.saved);
         assert.isTrue(types.history);
@@ -56,8 +56,8 @@
 
     test('Exports to drive', (done) => {
       element.destination = 'drive';
-      element.addEventListener('export-data', (e) => {
-        assert.equal(e.detail.destination, 'drive');
+      element.addEventListener('arc-data-export', (e) => {
+        assert.equal(e.detail.options.provider, 'drive');
         e.detail.result = Promise.resolve();
         done();
       });
@@ -66,7 +66,7 @@
     });
 
     test('Sets loading flag', () => {
-      element.addEventListener('export-data', (e) => {
+      element.addEventListener('arc-data-export', (e) => {
         e.detail.result = new Promise((resolve) => {
           setTimeout(() => resolve(), 1);
         });
@@ -77,7 +77,7 @@
     });
 
     test('Re-sets loading flag', (done) => {
-      element.addEventListener('export-data', (e) => {
+      element.addEventListener('arc-data-export', (e) => {
         e.detail.result = new Promise((resolve) => {
           setTimeout(() => resolve(), 1);
           setTimeout(() => {
@@ -107,9 +107,9 @@
       element = fixture('Basic');
     });
 
-    test('Dispatches export-data event', () => {
+    test('Dispatches arc-data-export event', () => {
       const spy = sinon.spy();
-      element.addEventListener('export-data', spy);
+      element.addEventListener('arc-data-export', spy);
       element._dispatchExport();
       assert.isTrue(spy.called);
     });
@@ -117,7 +117,7 @@
     test('Returns the event', () => {
       const e = element._dispatchExport();
       assert.typeOf(e, 'customevent');
-      assert.equal(e.type, 'export-data');
+      assert.equal(e.type, 'arc-data-export');
     });
 
     test('Event bubbles', () => {
@@ -139,7 +139,7 @@
       };
       element.fileName = undefined;
       const e = element._dispatchExport(data);
-      assert.typeOf(e.detail.file, 'string');
+      assert.typeOf(e.detail.options.provider, 'string');
     });
   });
 
@@ -161,8 +161,8 @@
     }
 
     teardown(() => {
-      window.removeEventListener('export-data', handler);
-      window.removeEventListener('export-data', errorHandler);
+      window.removeEventListener('arc-data-export', handler);
+      window.removeEventListener('arc-data-export', errorHandler);
     });
 
     test('Throws when export event not handled', () => {
@@ -172,21 +172,21 @@
     });
 
     test('Returns a promise', () => {
-      window.addEventListener('export-data', handler);
+      window.addEventListener('arc-data-export', handler);
       const result = element.startExport();
       assert.typeOf(result.then, 'function');
       return result;
     });
 
     test('Sets loading state', () => {
-      window.addEventListener('export-data', handler);
+      window.addEventListener('arc-data-export', handler);
       const result = element.startExport();
       assert.isTrue(element.loading);
       return result;
     });
 
     test('Promise results to data returned by the export processor', () => {
-      window.addEventListener('export-data', handler);
+      window.addEventListener('arc-data-export', handler);
       return element.startExport()
       .then((data) => {
         assert.deepEqual(data, {test: true});
@@ -194,7 +194,7 @@
     });
 
     test('Resets exportComplete flag', () => {
-      window.addEventListener('export-data', handler);
+      window.addEventListener('arc-data-export', handler);
       return element.startExport()
       .then(() => {
         assert.isFalse(element.loading);
@@ -202,7 +202,7 @@
     });
 
     test('Opens exportError on error', () => {
-      window.addEventListener('export-data', errorHandler);
+      window.addEventListener('arc-data-export', errorHandler);
       return element.startExport()
       .then(() => {
         throw new Error('Should not resolve.');
@@ -216,7 +216,7 @@
     });
 
     test('Resets exportComplete flag on error', () => {
-      window.addEventListener('export-data', errorHandler);
+      window.addEventListener('arc-data-export', errorHandler);
       return element.startExport()
       .catch(() => {
         assert.isFalse(element.loading);
