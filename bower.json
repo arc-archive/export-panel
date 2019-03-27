@@ -1,7 +1,7 @@
 {
   "name": "export-panel",
   "description": "Data export panel for Advanced REST Client.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "Apache-2.0",
   "authors": [
     "Pawel Psztyc",
