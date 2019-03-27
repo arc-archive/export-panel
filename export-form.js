@@ -11,19 +11,19 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import '@polymer/paper-toast/paper-toast.js';
-import '@advanced-rest-client/arc-icons/arc-icons.js';
-import '@polymer/iron-form/iron-form.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
-import '@polymer/paper-listbox/paper-listbox.js';
-import '@polymer/paper-item/paper-icon-item.js';
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-spinner/paper-spinner.js';
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
+import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
+import '../../@polymer/paper-toast/paper-toast.js';
+import '../../@advanced-rest-client/arc-icons/arc-icons.js';
+import '../../@polymer/iron-form/iron-form.js';
+import '../../@polymer/paper-checkbox/paper-checkbox.js';
+import '../../@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
+import '../../@polymer/paper-listbox/paper-listbox.js';
+import '../../@polymer/paper-item/paper-icon-item.js';
+import '../../@polymer/iron-icon/iron-icon.js';
+import '../../@polymer/paper-button/paper-button.js';
+import '../../@polymer/paper-spinner/paper-spinner.js';
+import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
 /**
  * Export data form with export flow logic.
  *
