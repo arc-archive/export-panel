@@ -190,7 +190,6 @@ class ExportForm extends PolymerElement {
 `;
   }
 
-  static get is() {return 'export-form';}
   static get properties() {
     return {
       /**
