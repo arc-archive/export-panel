@@ -12,7 +12,6 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
 import '../../@polymer/paper-toast/paper-toast.js';
 import '../../@advanced-rest-client/arc-icons/arc-icons.js';
 import '../../@polymer/iron-form/iron-form.js';
@@ -52,11 +51,8 @@ import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
  *
  * Custom property | Description | Default
  * ----------------|-------------|----------
- * `--export-panel` | Mixin applied to the element | `{}`
- * `--error-toast` | Mixin applied to the error toast message | `{}`
  * `--warning-primary-color` | Error toast background color | `#FF7043`
  * `--warning-contrast-color` | Error toast color | `#fff`
- * `--arc-font-headline` | Mixin applied to the header | `{}`
  * `--context-menu-item-color` | Color of the dropdown menu items | ``
  * `--context-menu-item-background-color` | Background olor of the dropdown menu items | ``
  * `--context-menu-item-color-hover` | Color of the dropdown menu items when hovering | ``
@@ -75,19 +71,21 @@ class ExportForm extends PolymerElement {
     <style>
     :host {
       display: block;
-      @apply --arc-font-body1;
-      @apply --export-panel;
+      font-size: var(--arc-font-body1-font-size);
+      font-weight: var(--arc-font-body1-font-weight);
+      line-height: var(--arc-font-body1-line-height);
     }
 
     h3 {
-      @apply --arc-font-subhead;
+      font-size: var(--arc-font-subhead-font-size);
+      font-weight: var(--arc-font-subhead-font-weight);
+      line-height: var(--arc-font-subhead-line-height);
       font-size: 14px;
     }
 
     .error-toast {
       background-color: var(--warning-primary-color, #FF7043);
       color: var(--warning-contrast-color, #fff);
-      @apply --error-toast;
     }
 
     paper-listbox iron-icon {
@@ -121,12 +119,12 @@ class ExportForm extends PolymerElement {
     .prepare-info {
       font-size: 15px;
       margin-top: 24px;
-      @apply --export-data-selector-prepare-intro;
     }
 
     .actions {
-      @apply --layout-horizontal;
-      @apply --layout-center;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       margin-top: 24px;
     }
 
@@ -137,13 +135,13 @@ class ExportForm extends PolymerElement {
 
     .action-button {
       margin-right: 8px;
-      @apply --export-data-selector-action-button;
     }
 
     .inline-config {
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      @apply --layout-wrap;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .destination-dropdown {

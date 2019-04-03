@@ -42,11 +42,15 @@ import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
  *
  * Custom property | Description | Default
  * ----------------|-------------|----------
- * `--export-panel` | Mixin applied to the element | `{}`
- * `--error-toast` | Mixin applied to the error toast message | `{}`
  * `--warning-primary-color` | Error toast background color | `#FF7043`
  * `--warning-contrast-color` | Error toast color | `#fff`
- * `--arc-font-headline` | Mixin applied to the header | `{}`
+ * `--arc-font-body1-font-size` | ARC theme property | ``
+ * `--arc-font-body1-font-weight` | ARC theme property | ``
+ * `--arc-font-body1-line-height` | ARC theme property | ``
+ * `--arc-font-subhead-font-size` | ARC theme property | ``
+ * `--arc-font-subhead-font-weight` | ARC theme property | ``
+ * `--arc-font-subhead-line-height` | ARC theme property | ``
+ * `--arc-settings-panel-header-color` | Color of the header | `currentcolor`
  *
  * @customElement
  * @polymer
@@ -55,19 +59,20 @@ import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
  */
 class ExportPanel extends PolymerElement {
   static get template() {
-    return html`
-    <style>
+    return html`<style>
     :host {
       display: block;
       padding: 4px;
-      @apply --arc-font-body1;
-      @apply --export-panel;
+      font-size: var(--arc-font-body1-font-size);
+      font-weight: var(--arc-font-body1-font-weight);
+      line-height: var(--arc-font-body1-line-height);
     }
 
     h2 {
-      @apply --arc-font-subhead;
+      font-size: var(--arc-font-subhead-font-size);
+      font-weight: var(--arc-font-subhead-font-weight);
+      line-height: var(--arc-font-subhead-line-height);
       color: var(--arc-settings-panel-header-color, currentcolor);
-      @apply --arc-settings-panel-header;
     }
     </style>
     <h2>Export data</h2>
@@ -75,8 +80,7 @@ class ExportPanel extends PolymerElement {
       <export-form destination="{{destination}}" file-name="{{fileName}}">
         <slot name="destination" slot="destination"></slot>
       </export-form>
-    </section>
-`;
+    </section>`;
   }
 
   static get properties() {
