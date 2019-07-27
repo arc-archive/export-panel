@@ -5,25 +5,14 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   export-form.html
+ *   export-form.js
  */
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../paper-toast/paper-toast.d.ts" />
-/// <reference path="../arc-icons/arc-icons.d.ts" />
-/// <reference path="../iron-form/iron-form.d.ts" />
-/// <reference path="../paper-checkbox/paper-checkbox.d.ts" />
-/// <reference path="../paper-dropdown-menu/paper-dropdown-menu.d.ts" />
-/// <reference path="../paper-listbox/paper-listbox.d.ts" />
-/// <reference path="../paper-item/paper-icon-item.d.ts" />
-/// <reference path="../iron-icon/iron-icon.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../paper-spinner/paper-spinner.d.ts" />
+import {LitElement, html, css} from 'lit-element';
 
 declare namespace UiElements {
 
@@ -55,11 +44,8 @@ declare namespace UiElements {
    *
    * Custom property | Description | Default
    * ----------------|-------------|----------
-   * `--export-panel` | Mixin applied to the element | `{}`
-   * `--error-toast` | Mixin applied to the error toast message | `{}`
    * `--warning-primary-color` | Error toast background color | `#FF7043`
    * `--warning-contrast-color` | Error toast color | `#fff`
-   * `--arc-font-headline` | Mixin applied to the header | `{}`
    * `--context-menu-item-color` | Color of the dropdown menu items | ``
    * `--context-menu-item-background-color` | Background olor of the dropdown menu items | ``
    * `--context-menu-item-color-hover` | Color of the dropdown menu items when hovering | ``
@@ -67,7 +53,15 @@ declare namespace UiElements {
    * `--export-form-action-button-color` | Color of the export button | `#fff`
    * `--export-form-action-button-background-color` | Background color of the export button | `--primary-color`
    */
-  class ExportForm extends Polymer.Element {
+  class ExportForm extends LitElement {
+    readonly loading: any;
+
+    /**
+     * When `true` the component began export flow.
+     */
+    _loading: boolean|null|undefined;
+    onloadingchnaged: Function|null;
+    onarcdataexport: Function|null;
 
     /**
      * Export destination name.
@@ -76,14 +70,19 @@ declare namespace UiElements {
     destination: string|null|undefined;
 
     /**
-     * When `true` the component began export flow.
-     */
-    readonly loading: boolean|null|undefined;
-
-    /**
      * When set this value will be used for export file name.
      */
     fileName: string|null|undefined;
+    constructor();
+    render(): any;
+
+    /**
+     * Registers an event handler for given type
+     *
+     * @param eventType Event type (name)
+     * @param value The handler to register
+     */
+    _registerCallback(eventType: String|null, value: Function|null): void;
 
     /**
      * Handler for click event. Calls `startExport()` function.
@@ -114,10 +113,15 @@ declare namespace UiElements {
     /**
      * Generates default export name value.
      */
-    _getExportFileName(): String|null;
+    generateFileName(): String|null;
+    _destinationHandler(e: any): void;
+    _fileNameHandler(e: any): void;
   }
 }
 
-interface HTMLElementTagNameMap {
-  "export-form": UiElements.ExportForm;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "export-form": UiElements.ExportForm;
+  }
 }
