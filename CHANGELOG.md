@@ -80,3 +80,12 @@
 
 
 
+# 3.0.0 (2019-07-27)
+
+
+### Features
+
+* upgrading to LitELement ([65270f2](https://github.com/advanced-rest-client/export-panel/commit/65270f2))
+
+
+
