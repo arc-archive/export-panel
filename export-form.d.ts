@@ -12,9 +12,7 @@
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+import {LitElement, html, css} from 'lit-element';
 
 declare namespace UiElements {
 
@@ -46,11 +44,8 @@ declare namespace UiElements {
    *
    * Custom property | Description | Default
    * ----------------|-------------|----------
-   * `--export-panel` | Mixin applied to the element | `{}`
-   * `--error-toast` | Mixin applied to the error toast message | `{}`
    * `--warning-primary-color` | Error toast background color | `#FF7043`
    * `--warning-contrast-color` | Error toast color | `#fff`
-   * `--arc-font-headline` | Mixin applied to the header | `{}`
    * `--context-menu-item-color` | Color of the dropdown menu items | ``
    * `--context-menu-item-background-color` | Background olor of the dropdown menu items | ``
    * `--context-menu-item-color-hover` | Color of the dropdown menu items when hovering | ``
@@ -58,7 +53,15 @@ declare namespace UiElements {
    * `--export-form-action-button-color` | Color of the export button | `#fff`
    * `--export-form-action-button-background-color` | Background color of the export button | `--primary-color`
    */
-  class ExportForm extends PolymerElement {
+  class ExportForm extends LitElement {
+    readonly loading: any;
+
+    /**
+     * When `true` the component began export flow.
+     */
+    _loading: boolean|null|undefined;
+    onloadingchnaged: Function|null;
+    onarcdataexport: Function|null;
 
     /**
      * Export destination name.
@@ -67,14 +70,19 @@ declare namespace UiElements {
     destination: string|null|undefined;
 
     /**
-     * When `true` the component began export flow.
-     */
-    readonly loading: boolean|null|undefined;
-
-    /**
      * When set this value will be used for export file name.
      */
     fileName: string|null|undefined;
+    constructor();
+    render(): any;
+
+    /**
+     * Registers an event handler for given type
+     *
+     * @param eventType Event type (name)
+     * @param value The handler to register
+     */
+    _registerCallback(eventType: String|null, value: Function|null): void;
 
     /**
      * Handler for click event. Calls `startExport()` function.
@@ -105,7 +113,9 @@ declare namespace UiElements {
     /**
      * Generates default export name value.
      */
-    _getExportFileName(): String|null;
+    generateFileName(): String|null;
+    _destinationHandler(e: any): void;
+    _fileNameHandler(e: any): void;
   }
 }
 

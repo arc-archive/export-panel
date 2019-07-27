@@ -11,9 +11,8 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
+import { LitElement, html, css } from 'lit-element';
 import './export-form.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
 /**
  * Data export panel for Advanced REST Client.
  *
@@ -53,34 +52,40 @@ import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
  * `--arc-settings-panel-header-color` | Color of the header | `currentcolor`
  *
  * @customElement
- * @polymer
  * @memberof UiElements
  * @demo demo/index.html
  */
-class ExportPanel extends PolymerElement {
-  static get template() {
-    return html`<style>
-    :host {
-      display: block;
-      padding: 4px;
-      font-size: var(--arc-font-body1-font-size);
-      font-weight: var(--arc-font-body1-font-weight);
-      line-height: var(--arc-font-body1-line-height);
-    }
+class ExportPanel extends LitElement {
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+        padding: 4px;
+        font-size: var(--arc-font-body1-font-size);
+        font-weight: var(--arc-font-body1-font-weight);
+        line-height: var(--arc-font-body1-line-height);
+      }
 
-    h2 {
-      font-size: var(--arc-font-subhead-font-size);
-      font-weight: var(--arc-font-subhead-font-weight);
-      line-height: var(--arc-font-subhead-line-height);
-      color: var(--arc-settings-panel-header-color, currentcolor);
-    }
-    </style>
-    <h2>Export data</h2>
-    <section class="card">
-      <export-form destination="{{destination}}" file-name="{{fileName}}">
-        <slot name="destination" slot="destination"></slot>
-      </export-form>
-    </section>`;
+      h2 {
+        font-size: var(--arc-font-subhead-font-size);
+        font-weight: var(--arc-font-subhead-font-weight);
+        line-height: var(--arc-font-subhead-line-height);
+        color: var(--arc-settings-panel-header-color, currentcolor);
+      }
+    `;
+  }
+
+  render() {
+    const { destination, fileName } = this;
+    return html`
+      <h2>Export data</h2>
+
+      <section class="card">
+        <export-form .destination="${destination}" .fileName="${fileName}">
+          <slot name="destination" slot="destination"></slot>
+        </export-form>
+      </section>
+    `;
   }
 
   static get properties() {
@@ -89,12 +94,56 @@ class ExportPanel extends PolymerElement {
        * Export destination name.
        * By default it can be `file` or `drive`.
        */
-      destination: String,
+      destination: { type: String },
       /**
        * When set this value will be used for export file name.
        */
-      fileName: String
+      fileName: { type: String }
     };
+  }
+
+  constructor() {
+    super();
+    this.destination = 'file';
+  }
+
+  firstUpdated() {
+    // When this element is initialized it overrides properties from ther form
+    // so it has to reset it's default values.
+    // Destination is reset in the constructor but file name is dynamic.
+    // The `setTimeout` is because for some reson the change is not reflected if done
+    // without it.
+    if (this.fileName === undefined) {
+      setTimeout(() => {
+        const panel = this.shadowRoot.querySelector('export-form');
+        this.fileName = panel.generateFileName();
+      });
+    }
+  }
+
+  /**
+   * @return {Function} Previously registered handler for `arc-data-export` event
+   */
+  get onarcdataexport() {
+    return this['_onarc-data-export'];
+  }
+  /**
+   * Registers a callback function for `arc-data-export` event
+   * @param {Function} value A callback to register. Pass `null` or `undefined`
+   * to clear the listener.
+   */
+  set onarcdataexport(value) {
+    const eventType = 'arc-data-export';
+    const key = `_on${eventType}`;
+    if (this[key]) {
+      this.removeEventListener(eventType, this[key]);
+    }
+    if (typeof value !== 'function') {
+      this[key] = null;
+      return;
+    }
+    this[key] = value;
+    this.addEventListener(eventType, value);
   }
   /**
    * @event arc-data-export

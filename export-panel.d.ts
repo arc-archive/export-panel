@@ -10,10 +10,9 @@
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
 
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+import {LitElement, html, css} from 'lit-element';
 
 declare namespace UiElements {
 
@@ -45,13 +44,18 @@ declare namespace UiElements {
    *
    * Custom property | Description | Default
    * ----------------|-------------|----------
-   * `--export-panel` | Mixin applied to the element | `{}`
-   * `--error-toast` | Mixin applied to the error toast message | `{}`
    * `--warning-primary-color` | Error toast background color | `#FF7043`
    * `--warning-contrast-color` | Error toast color | `#fff`
-   * `--arc-font-headline` | Mixin applied to the header | `{}`
+   * `--arc-font-body1-font-size` | ARC theme property | ``
+   * `--arc-font-body1-font-weight` | ARC theme property | ``
+   * `--arc-font-body1-line-height` | ARC theme property | ``
+   * `--arc-font-subhead-font-size` | ARC theme property | ``
+   * `--arc-font-subhead-font-weight` | ARC theme property | ``
+   * `--arc-font-subhead-line-height` | ARC theme property | ``
+   * `--arc-settings-panel-header-color` | Color of the header | `currentcolor`
    */
-  class ExportPanel extends PolymerElement {
+  class ExportPanel extends LitElement {
+    onarcdataexport: Function|null;
 
     /**
      * Export destination name.
@@ -63,6 +67,9 @@ declare namespace UiElements {
      * When set this value will be used for export file name.
      */
     fileName: string|null|undefined;
+    constructor();
+    firstUpdated(): void;
+    render(): any;
   }
 }
 

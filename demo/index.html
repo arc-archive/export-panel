@@ -6,107 +6,102 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
   <title>export-panel demo</title>
 
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../../../web-animations-js/web-animations-next.min.js"></script>
+  <script src="../node_modules/web-animations-js/web-animations-next.min.js"></script>
 
-  <script type="module" src="../../../@webcomponents/shadycss/entrypoints/apply-shim.js"></script>
-  <script type="module" src="../../../@polymer/polymer/lib/elements/custom-style.js"></script>
-  <script type="module" src="../../../@polymer/polymer/lib/elements/dom-bind.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/arc-data-export/arc-data-export.js"></script>
-  <script type="module" src="../../../@polymer/paper-styles/typography.js"></script>
-  <script type="module" src="../../../@polymer/paper-toast/paper-toast.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/arc-electron-default-theme/arc-electron-default-theme.js"></script>
-  <script type="module" src="../export-panel.js"></script>
-  <style is="custom-style">
-  html,
-  body {
-    background-color: #EEEEEE;
-  }
-
-  .vertical-section-container {
-    max-width: 600px;
-    margin: 24px auto;
-  }
-
-  :root {
-    --primary-color: #00A2DF;
-    --accent-color: #FF8A65;
-    --action-button: {
-      background-color: var(--primary-color);
-      color: #fff;
-    };
-    --empty-info: {
-      color: rgba(0, 0, 0, 0.74);
-      font-size: 16px;
-    };
-
-    --arc-font-headline: {
-      @apply --paper-font-headline;
-    };
-
-    --arc-font-subhead: {
-      @apply --paper-font-subhead;
-    };
-    --arc-font-body1: {
-      @apply --paper-font-body1;
-    };
-    --arc-font-title: {
-      @apply --paper-font-title;
+  <style>
+    html,
+    body {
+      background-color: #EEEEEE;
+      min-height: 100%;
     }
-    --paper-progress-active-color: var(--primary-color);
-  }
-  [card] {
-    padding: 20px;
-    background: white;
-  }
+
+    .demo {
+      max-width: 1200px;
+      width: 700px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 12px;
+      margin: 20px;
+      box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14),
+                  0 1px 8px 0 rgba(0, 0, 0, 0.12),
+                  0 3px 3px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    body.styled {
+      --primary-color: #00A2DF;
+      --arc-font-body1-font-size: 14px;
+      --arc-font-body1-font-weight: 400;
+      --arc-font-body1-line-height: 20px;
+
+      --arc-font-subhead-font-size: 16px;
+      --arc-font-subhead-font-weight: 400;
+      --arc-font-subhead-line-height: 24px;
+
+      --action-button-background-color: var(--primary-color);
+      --action-button-background-image: none;
+      --action-button-color: #fff;
+      --action-button-transition: background-color 300ms linear;
+      --action-button-hover-background-color: #04b3f5;
+      --action-button-hover-color: #fff;
+      --action-button-disabled-background-color: #eaeaea;
+      --action-button-disabled-color: #a8a8a8;
+    }
+
+    body.styled.dark {
+      background-color: #424242;
+      height: 100%;
+      color: #fff;
+      --accent-color: #FF9800;
+      --primary-background-color: #424242;
+      --action-button-background-color: #fff;
+      --action-button-color: var(--primary-color);
+      --secondary-action-button-color: #fff;
+      --primary-color: #2196f3;
+      --primary-text-color: #fff;
+      --paper-toggle-button-label-color: #fff;
+      --action-button-background-color: #212121;
+      --action-button-color: #fff;
+      --action-button-hover-background-color: #212121;
+      --action-button-hover-color: #04b3f5;
+      --paper-input-container-color: rgba(255, 255, 255, 0.64);
+      --paper-toggle-button-label-color: #fff;
+    }
+    body.styled.dark .card {
+      background-color: #424242;
+    }
   </style>
 </head>
-<body unresolved>
-  <dom-bind id="demo">
-    <template is="dom-bind">
-      <arc-data-export></arc-data-export>
-      <div class="vertical-section-container centered" card>
-        <export-panel></export-panel>
-      </div>
+<body class="styled">
+  <arc-data-export appversion="demo-app"></arc-data-export>
 
-      <div class="vertical-section-container centered" card>
-        <h2>Additional destinations</h2>
-        <export-panel>
-          <paper-icon-item data-value="my-destination" slot="destination">
-            <iron-icon icon="arc:add" slot="item-icon"></iron-icon>
-            Export to my destination
-          </paper-icon-item>
-        </export-panel>
-      </div>
-      <paper-toast text="Drive export requested" id="driveToast"></paper-toast>
-      <paper-toast text="File export requested" id="fileToast"></paper-toast>
-    </template>
-  </dom-bind>
+  <div class="vertical-section-container centered card" role="main">
+    <export-panel></export-panel>
+  </div>
 
-  <script type="module">
-  import '../../../pouchdb/dist/pouchdb.js';
-  (function(scope) {
-    scope._fileExportHandler = function(e) {
-      e.preventDefault();
-      e.detail.result = new Promise((resolve) => {
-        setTimeout(() => resolve(), 1000);
-      });
-      scope.$.fileToast.opened = true;
-      console.log(e.detail);
-    };
+  <div class="vertical-section-container centered card">
+    <h2>Additional destinations</h2>
 
-    scope._driveExportHandler = function(e) {
-      e.preventDefault();
-      e.detail.result = new Promise((resolve) => {
-        setTimeout(() => resolve(), 1000);
-      });
-      scope.$.driveToast.opened = true;
-      console.log(e.detail);
-    };
+    <export-panel>
+      <paper-icon-item data-value="my-destination" slot="destination">
+        <iron-icon icon="arc:add" slot="item-icon"></iron-icon>
+        Export to my destination
+      </paper-icon-item>
+    </export-panel>
 
-    window.addEventListener('file-data-save', scope._fileExportHandler);
-    window.addEventListener('google-drive-data-save', scope._driveExportHandler);
-  })(document.getElementById('demo'));
-  </script>
+  </div>
+
+  <div class="centered actions card">
+    <h2>View control</h2>
+    <paper-toggle-button id="theme">Toggle dark theme</paper-toggle-button>
+    <paper-toggle-button checked id="styled">Toggle styles</paper-toggle-button>
+  </div>
+
+  <paper-toast text="Drive export requested" id="driveToast"></paper-toast>
+  <paper-toast text="File export requested" id="fileToast"></paper-toast>
+
+  <script type="module" src="./index.js"></script>
 </body>
 </html>

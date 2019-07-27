@@ -2,13 +2,13 @@
 
 [![Build Status](https://travis-ci.org/advanced-rest-client/export-panel.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/export-panel)
 
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/advanced-rest-client/export-panel)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@advanced-rest-client/export-panel)
 
-## &lt;export-panel&gt;
+## export-panel
 
 Data export panel for Advanced REST Client.
 
-The panel works with `@advanced-rest-client/arc-data-export` element to prepare the data.
+The panel works with `@advanced-rest-client/arc-data-export` element to prepare the data. See it's documentation for proper file events handling.
 
 ```html
 <export-panel></export-panel>
@@ -40,43 +40,35 @@ npm install --save @advanced-rest-client/export-panel
 </html>
 ```
 
-### In a Polymer 3 element
+### In a LitElement template
 
 ```js
-import {PolymerElement, html} from '@polymer/polymer';
+import { LitElement, html } from 'lit-element';
 import '@advanced-rest-client/export-panel/export-panel.js';
 
-class SampleElement extends PolymerElement {
-  static get template() {
-    return html`
-    <export-panel></export-panel>
-    `;
-  }
-
-  _authChanged(e) {
-    console.log(e.detail);
+class SampleElement extends LitElement {
+  render() {
+    return html`<export-panel></export-panel>`;
   }
 }
 customElements.define('sample-element', SampleElement);
 ```
 
-### Installation
+## Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/export-panel
-cd api-url-editor
+cd export-panel
 npm install
-npm install -g polymer-cli
 ```
 
 ### Running the demo locally
 
 ```sh
-polymer serve --npm
-open http://127.0.0.1:<port>/demo/
+npm start
 ```
 
 ### Running the tests
 ```sh
-polymer test --npm
+npm test
 ```
