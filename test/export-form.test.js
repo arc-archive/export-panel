@@ -1,5 +1,5 @@
 import { fixture, assert, nextFrame, aTimeout } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
+import * as sinon from 'sinon/pkg/sinon-esm.js';
 import '../export-form.js';
 
 describe('<export-form>', () => {
@@ -73,7 +73,6 @@ describe('<export-form>', () => {
 
     function handler(e) {
       e.preventDefault();
-      /* global Promise */
       e.detail.result = Promise.resolve({ test: true });
     }
 
@@ -229,7 +228,7 @@ describe('<export-form>', () => {
     });
 
     it('Selects all items', () => {
-      const nodes = element.shadowRoot.querySelectorAll('form paper-checkbox');
+      const nodes = element.shadowRoot.querySelectorAll('form anypoint-checkbox');
       nodes[0].checked = false;
       nodes[2].checked = false;
       element.selectAll();
@@ -258,7 +257,7 @@ describe('<export-form>', () => {
     });
 
     it('changes destination', () => {
-      const node = element.shadowRoot.querySelector('paper-input');
+      const node = element.shadowRoot.querySelector('anypoint-input');
       node.dispatchEvent(
         new CustomEvent('value-changed', {
           detail: {

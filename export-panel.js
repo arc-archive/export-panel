@@ -76,12 +76,15 @@ class ExportPanel extends LitElement {
   }
 
   render() {
-    const { destination, fileName } = this;
+    const { destination, fileName, compatibility, outlined } = this;
     return html`
       <h2>Export data</h2>
-
       <section class="card">
-        <export-form .destination="${destination}" .fileName="${fileName}">
+        <export-form
+          .destination="${destination}"
+          .fileName="${fileName}"
+          ?compatibility="${compatibility}"
+          ?outlined="${outlined}">
           <slot name="destination" slot="destination"></slot>
         </export-form>
       </section>
@@ -98,7 +101,15 @@ class ExportPanel extends LitElement {
       /**
        * When set this value will be used for export file name.
        */
-      fileName: { type: String }
+      fileName: { type: String },
+      /**
+       * Enables compatibility with Anypoint platform
+       */
+      compatibility: { type: Boolean },
+      /**
+       * Enables outlined theme for inputs
+       */
+      outlined: { type: Boolean }
     };
   }
 

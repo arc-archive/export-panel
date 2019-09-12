@@ -6,31 +6,15 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
   <title>export-panel demo</title>
 
-  <script src="../node_modules/web-animations-js/web-animations-next.min.js"></script>
+  <script src="../node_modules/web-animations-js/web-animations.min.js"></script>
 
   <style>
-    html,
-    body {
-      background-color: #EEEEEE;
-      min-height: 100%;
-    }
-
-    .demo {
-      max-width: 1200px;
-      width: 700px;
-      margin-bottom: 40px;
-    }
-
-    .card {
-      background-color: #fff;
-      padding: 12px;
-      margin: 20px;
-      box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14),
-                  0 1px 8px 0 rgba(0, 0, 0, 0.12),
-                  0 3px 3px -2px rgba(0, 0, 0, 0.4);
+    .centered[role="main"] {
+      max-width: 1400px;
     }
 
     body.styled {
+      --anypoiont-dropdown-shaddow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
       --primary-color: #00A2DF;
       --arc-font-body1-font-size: 14px;
       --arc-font-body1-font-weight: 400;
@@ -68,39 +52,35 @@
       --action-button-hover-color: #04b3f5;
       --paper-input-container-color: rgba(255, 255, 255, 0.64);
       --paper-toggle-button-label-color: #fff;
+
+      --anypoint-checkbox-label-color:  #F5F5F5;
+      --anypoint-input-background-color: rgba(255, 255, 255, 0.04);
+      --anypoint-input-label-color: #fff;
+      --anypoint-input-input-color: #fff;
+      --anypoint-input-border-bottom-color: #8e8e8e;
+      --anypoint-input-focused-border-bottom-color: #fff;
+      --anypoint-input-label-background-color: rgb(66, 66, 66);
+      --anypoint-input-compatibility-focus-background-color: #3a3b3c;
+      --anypoint-input-compatibility-focus-border-color: #178bea;
+      --anypoint-input-info-message-color: #fff;
+
+      --anypoint-dropdown-menu-background-color: #494949;
+      --anypoint-dropdown-menu-label-background-color: #494949;
+      --anypoint-listbox-background-color: #494949;
+      --anypoint-dropdown-menu-focus-background-color: #494949;
+      --anypoint-dropdown-menu-hover-border-color: #fff;
+      --anypoint-dropdown-menu-label-color: #fff;
+      --anypoint-dropdown-menu-info-message-color: #fff;
+      --anypoint-item-hover-background-color: #616161;
     }
+    
     body.styled.dark .card {
       background-color: #424242;
     }
   </style>
 </head>
 <body class="styled">
-  <arc-data-export appversion="demo-app"></arc-data-export>
-
-  <div class="vertical-section-container centered card" role="main">
-    <export-panel></export-panel>
-  </div>
-
-  <div class="vertical-section-container centered card">
-    <h2>Additional destinations</h2>
-
-    <export-panel>
-      <paper-icon-item data-value="my-destination" slot="destination">
-        <iron-icon icon="arc:add" slot="item-icon"></iron-icon>
-        Export to my destination
-      </paper-icon-item>
-    </export-panel>
-
-  </div>
-
-  <div class="centered actions card">
-    <h2>View control</h2>
-    <paper-toggle-button id="theme">Toggle dark theme</paper-toggle-button>
-    <paper-toggle-button checked id="styled">Toggle styles</paper-toggle-button>
-  </div>
-
-  <paper-toast text="Drive export requested" id="driveToast"></paper-toast>
-  <paper-toast text="File export requested" id="fileToast"></paper-toast>
+  <div id="demo"></div>
 
   <script type="module" src="./index.js"></script>
 </body>

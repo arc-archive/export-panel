@@ -12,16 +12,16 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { LitElement, html, css } from 'lit-element';
-import '@polymer/paper-toast/paper-toast.js';
-import '@advanced-rest-client/arc-icons/arc-icons.js';
+import { archive, driveColor } from '@advanced-rest-client/arc-icons/ArcIcons.js';
 import '@polymer/iron-form/iron-form.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
-import '@polymer/paper-listbox/paper-listbox.js';
-import '@polymer/paper-item/paper-icon-item.js';
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-spinner/paper-spinner.js';
+import '@anypoint-web-components/anypoint-checkbox/anypoint-checkbox.js';
+import '@anypoint-web-components/anypoint-dropdown-menu/anypoint-dropdown-menu.js';
+import '@anypoint-web-components/anypoint-listbox/anypoint-listbox.js';
+import '@anypoint-web-components/anypoint-item/anypoint-item.js';
+import '@anypoint-web-components/anypoint-item/anypoint-icon-item.js';
+import '@anypoint-web-components/anypoint-button/anypoint-button.js';
+import '@anypoint-web-components/anypoint-input/anypoint-input.js';
+import '@polymer/paper-toast/paper-toast.js';
 /**
  * Export data form with export flow logic.
  *
@@ -85,30 +85,11 @@ class ExportForm extends LitElement {
         color: var(--warning-contrast-color, #fff);
       }
 
-      paper-listbox iron-icon {
+      anypoint-listbox iron-icon {
         color: var(--context-menu-item-color);
       }
 
-      paper-listbox paper-icon-item,
-      .list ::slotted(paper-icon-item),
-      .list ::slotted(.menu-item) {
-        color: var(--context-menu-item-color);
-        background-color: var(--context-menu-item-background-color);
-        cursor: pointer;
-      }
-
-      paper-listbox paper-icon-item:hover,
-      .list ::slotted(paper-icon-item):hover,
-      .list ::slotted(.menu-item):hover {
-        color: var(--context-menu-item-color-hover);
-        background-color: var(--context-menu-item-background-color-hover);
-      }
-
-      paper-listbox paper-icon-item:hover iron-icon {
-        color: var(--context-menu-item-color-hover);
-      }
-
-      paper-checkbox {
+      anypoint-checkbox {
         margin: 12px 0px;
         display: block;
       }
@@ -153,61 +134,103 @@ class ExportForm extends LitElement {
       .destination-dropdown {
         margin-right: 8px;
       }
+
+      .icon {
+        width: 24px;
+        height: 24px;
+      }
+    `;
+  }
+
+  _destinationTemplate() {
+    const { destination, compatibility, outlined } = this;
+    return html`<anypoint-dropdown-menu
+      ?compatibility="${compatibility}"
+      ?outlined="${outlined}"
+      class="destination-dropdown"
+      aria-label="Select export location"
+      aria-expanded="false"
+      @opened-changed="${this._dropdownOpenedHandler}"
+    >
+      <label slot="label">Export location</label>
+      <anypoint-listbox
+        slot="dropdown-content"
+        .selected="${destination}"
+        @selected-changed="${this._destinationHandler}"
+        class="list"
+        ?compatibility="${compatibility}"
+        attrforselected="data-value"
+      >
+        <anypoint-icon-item
+          class="menu-item"
+          data-action="export-all-file"
+          data-value="file"
+          ?compatibility="${compatibility}">
+          <span class="icon" slot="item-icon">${archive}</span>
+          Export to file
+        </anypoint-icon-item>
+        <anypoint-icon-item
+          class="menu-item"
+          data-action="export-all-drive"
+          data-value="drive"
+          ?compatibility="${compatibility}">
+          <span class="icon" slot="item-icon">${driveColor}</span>
+          Export to Google Drive
+        </anypoint-icon-item>
+        <slot name="destination"></slot>
+      </anypoint-listbox>
+    </anypoint-dropdown-menu>`;
+  }
+
+  _fileInputTemplate() {
+    const { fileName, compatibility, outlined } = this;
+    return html`<anypoint-input
+      ?compatibility="${compatibility}"
+      ?outlined="${outlined}"
+      .value="${fileName}"
+      @value-changed="${this._fileNameHandler}">
+      <label slot="label">Export location</label>
+    </anypoint-input>`;
+  }
+
+  _exportItemsTemplate() {
+    return html`
+    <anypoint-checkbox name="saved" checked>Projects and saved request list</anypoint-checkbox>
+    <anypoint-checkbox name="history" checked>Requests history</anypoint-checkbox>
+    <anypoint-checkbox name="cookies" checked>Cookies</anypoint-checkbox>
+    <anypoint-checkbox name="auth" checked>Saved passwords</anypoint-checkbox>
+    <anypoint-checkbox name="url-history" checked>URL history</anypoint-checkbox>
+    <anypoint-checkbox name="websocket" checked>Web sockets history</anypoint-checkbox>
+    <anypoint-checkbox name="variables" checked>Variables data</anypoint-checkbox>
+    <anypoint-checkbox name="host-rules" checked>Host rules</anypoint-checkbox>
     `;
   }
 
   render() {
-    const { destination, fileName, _loading } = this;
+    const { _loading, compatibility } = this;
     return html`
       <section class="inline-config">
-        <paper-dropdown-menu
-          label="Export location"
-          class="destination-dropdown"
-          aria-label="Select export location"
-          aria-expanded="false"
-          @opened-changed="${this._dropdownOpenedHandler}"
-        >
-          <paper-listbox
-            slot="dropdown-content"
-            .selected="${destination}"
-            @selected-changed="${this._destinationHandler}"
-            class="list"
-            attr-for-selected="data-value"
-          >
-            <paper-icon-item class="menu-item" data-action="export-all-file" data-value="file">
-              <iron-icon icon="arc:archive" slot="item-icon"></iron-icon>
-              Export to file
-            </paper-icon-item>
-            <paper-icon-item class="menu-item" data-action="export-all-drive" data-value="drive">
-              <iron-icon icon="arc:drive-color" slot="item-icon"></iron-icon>
-              Export to Google Drive
-            </paper-icon-item>
-            <slot name="destination"></slot>
-          </paper-listbox>
-        </paper-dropdown-menu>
-
-        <paper-input label="File name" .value="${fileName}" @value-changed="${this._fileNameHandler}"></paper-input>
+        ${this._destinationTemplate()}
+        ${this._fileInputTemplate()}
       </section>
 
       <h3>Data to export</h3>
       <iron-form>
         <form enctype="application/json">
-          <paper-checkbox name="saved" checked>Projects and saved request list</paper-checkbox>
-          <paper-checkbox name="history" checked>Requests history</paper-checkbox>
-          <paper-checkbox name="cookies" checked>Cookies</paper-checkbox>
-          <paper-checkbox name="auth" checked>Saved passwords</paper-checkbox>
-          <paper-checkbox name="url-history" checked>URL history</paper-checkbox>
-          <paper-checkbox name="websocket" checked>Web sockets history</paper-checkbox>
-          <paper-checkbox name="variables" checked>Variables data</paper-checkbox>
-          <paper-checkbox name="host-rules" checked>Host rules</paper-checkbox>
+          ${this._exportItemsTemplate()}
         </form>
       </iron-form>
 
       <div class="actions">
-        <paper-button class="action-button" ?disabled="${_loading}" raised @click="${this._prepare}"
-          >Export</paper-button
-        >
-        <paper-spinner ?active="${_loading}"></paper-spinner>
+        <anypoint-button
+          @click="${this._prepare}"
+          emphasis="high"
+          ?compatibility="${compatibility}"
+          ?disabled="${_loading}"
+          class="action-button"
+          data-action="export"
+        >Export</anypoint-button>
+        ${_loading ? html`Exporting data...` : ''}
       </div>
 
       <p class="prepare-info">Depending on the data size it may take a minute</p>
@@ -230,7 +253,15 @@ class ExportForm extends LitElement {
       /**
        * When set this value will be used for export file name.
        */
-      fileName: { type: String }
+      fileName: { type: String },
+      /**
+       * Enables compatibility with Anypoint platform
+       */
+      compatibility: { type: Boolean },
+      /**
+       * Enables outlined theme for inputs
+       */
+      outlined: { type: Boolean }
     };
   }
 
@@ -318,7 +349,7 @@ class ExportForm extends LitElement {
    * Selects all items on the list.
    */
   selectAll() {
-    const nodes = this.shadowRoot.querySelectorAll('form paper-checkbox');
+    const nodes = this.shadowRoot.querySelectorAll('form anypoint-checkbox');
     for (let i = 0, len = nodes.length; i < len; i++) {
       if (!nodes[i].checked) {
         nodes[i].checked = true;
@@ -339,8 +370,7 @@ class ExportForm extends LitElement {
     });
     const e = this._dispatchExport(data);
     if (!e.detail.result) {
-      /* global Promise */
-      return Promise.reject(new Error('Export event not handled'));
+      throw new Error('Export event not handled');
     }
     this._loading = true;
     try {
