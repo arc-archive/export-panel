@@ -73,8 +73,38 @@ declare namespace UiElements {
      * When set this value will be used for export file name.
      */
     fileName: string|null|undefined;
+
+    /**
+     * Enables compatibility with Anypoint platform
+     */
+    compatibility: boolean|null|undefined;
+
+    /**
+     * Enables outlined theme for inputs
+     */
+    outlined: boolean|null|undefined;
+
+    /**
+     * When set the encrypt file option is enabled.
+     */
+    encryptFile: boolean|null|undefined;
+
+    /**
+     * Encryption passphrase
+     */
+    passphrase: string|null|undefined;
+
+    /**
+     * When set it renders encryption options.
+     */
+    withEncrypt: boolean|null|undefined;
     constructor();
     render(): any;
+    _destinationTemplate(): any;
+    _fileInputTemplate(): any;
+    _exportItemsTemplate(): any;
+    _encryptionTemplate(): any;
+    _encyptionPasswordTemplate(): any;
 
     /**
      * Registers an event handler for given type
@@ -115,7 +145,9 @@ declare namespace UiElements {
      */
     generateFileName(): String|null;
     _destinationHandler(e: any): void;
-    _fileNameHandler(e: any): void;
+    _dropdownOpenedHandler(e: any): void;
+    _checkedChanged(e: any): void;
+    _inputHandler(e: any): void;
   }
 }
 

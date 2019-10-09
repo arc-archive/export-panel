@@ -67,6 +67,31 @@ declare namespace UiElements {
      * When set this value will be used for export file name.
      */
     fileName: string|null|undefined;
+
+    /**
+     * Enables compatibility with Anypoint platform
+     */
+    compatibility: boolean|null|undefined;
+
+    /**
+     * Enables outlined theme for inputs
+     */
+    outlined: boolean|null|undefined;
+
+    /**
+     * When set it renders encryption options.
+     */
+    withEncrypt: boolean|null|undefined;
+
+    /**
+     * When set the encrypt file option is enabled.
+     */
+    encryptFile: boolean|null|undefined;
+
+    /**
+     * Encryption passphrase
+     */
+    passphrase: string|null|undefined;
     constructor();
     firstUpdated(): void;
     render(): any;
