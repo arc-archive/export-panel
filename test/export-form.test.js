@@ -1,10 +1,18 @@
 import { fixture, assert, nextFrame, aTimeout } from '@open-wc/testing';
 import * as sinon from 'sinon/pkg/sinon-esm.js';
+import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import '../export-form.js';
 
 describe('<export-form>', () => {
   async function basicFixture() {
     return await fixture(`<export-form></export-form>`);
+  }
+
+  async function encryptionFixture() {
+    return await fixture(`<export-form
+      withEncrypt
+      file="test-file.json"
+      provider="file"></export-form>`);
   }
 
   describe('constructor()', () => {
@@ -250,22 +258,25 @@ describe('<export-form>', () => {
     });
   });
 
-  describe('_fileNameHandler()', () => {
+  describe('Input handlers', () => {
     let element;
     beforeEach(async () => {
       element = await basicFixture();
     });
 
     it('changes destination', () => {
-      const node = element.shadowRoot.querySelector('anypoint-input');
-      node.dispatchEvent(
-        new CustomEvent('value-changed', {
-          detail: {
-            value: 'TEST'
-          }
-        })
-      );
+      const node = element.shadowRoot.querySelector('anypoint-input[name="fileName"]');
+      node.value = 'TEST';
       assert.equal(element.fileName, 'TEST');
+    });
+
+    it('changes encryption parssword', async () => {
+      element.withEncrypt = true;
+      element.encryptFile = true;
+      await nextFrame();
+      const node = element.shadowRoot.querySelector('anypoint-masked-input[name="passphrase"]');
+      node.value = 'TEST';
+      assert.equal(element.passphrase, 'TEST');
     });
   });
 
@@ -350,6 +361,81 @@ describe('<export-form>', () => {
       element.onarcdataexport = null;
       assert.isFalse(called1);
       assert.isTrue(called2);
+    });
+  });
+
+  describe('File encryption', () => {
+    function handler(e) {
+      e.preventDefault();
+      e.detail.result = Promise.resolve({ test: true });
+    }
+
+    afterEach(() => {
+      window.removeEventListener('arc-data-export', handler);
+    });
+
+    let element;
+    beforeEach(async () => {
+      element = await encryptionFixture();
+      window.addEventListener('arc-data-export', handler);
+    });
+
+    it('renders file encryption option', () => {
+      const node = element.shadowRoot.querySelector('anypoint-checkbox[name="encryptFile"]');
+      assert.ok(node);
+    });
+
+    it('sets encryptFile when selecting encryption checkbox', () => {
+      const node = element.shadowRoot.querySelector('anypoint-checkbox[name="encryptFile"]');
+      MockInteractions.tap(node);
+      assert.isTrue(element.encryptFile);
+    });
+
+    it('renders password input when encryption is enabled', async () => {
+      const node = element.shadowRoot.querySelector('anypoint-checkbox[name="encryptFile"]');
+      MockInteractions.tap(node);
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-masked-input[name="passphrase"]');
+      assert.ok(input);
+    });
+
+    it('passphrase input change updates passphrase field', async () => {
+      element.encryptFile = true;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-masked-input[name="passphrase"]');
+      input.value = 'test';
+      assert.equal(element.passphrase, 'test');
+    });
+
+    it('generates configuration with default empty password', async () => {
+      element.encryptFile = true;
+      await nextFrame();
+
+      const spy = sinon.spy();
+      element.addEventListener('arc-data-export', spy);
+      await element.startExport();
+
+      const { detail } = spy.args[0][0];
+      const { options } = detail;
+      assert.isTrue(options.encrypt, 'encrypt is set');
+      assert.equal(options.passphrase, '', 'passphrase is set');
+    });
+
+    it('generates configuration with set password', async () => {
+      element.encryptFile = true;
+      await nextFrame();
+
+      const input = element.shadowRoot.querySelector('anypoint-masked-input[name="passphrase"]');
+      input.value = 'test';
+
+      const spy = sinon.spy();
+      element.addEventListener('arc-data-export', spy);
+      await element.startExport();
+
+      const { detail } = spy.args[0][0];
+      const { options } = detail;
+      assert.isTrue(options.encrypt, 'encrypt is set');
+      assert.equal(options.passphrase, 'test', 'passphrase is set');
     });
   });
 

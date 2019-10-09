@@ -15,16 +15,19 @@ class DemoPage extends ArcDemoPage {
     this.initObservableProperties([
       'compatibility',
       'outlined',
-      'customDestination'
+      'customDestination',
+      'withEncrypt'
     ]);
     this._componentName = 'export-panel';
     this.demoStates = ['Filled', 'Outlined', 'Anypoint'];
 
     this._demoStateHandler = this._demoStateHandler.bind(this);
     this._toggleMainOption = this._toggleMainOption.bind(this);
+    this._encodeHandler = this._encodeHandler.bind(this);
 
     window.addEventListener('file-data-save', this._fileExportHandler);
     window.addEventListener('google-drive-data-save', this._driveExportHandler);
+    window.addEventListener('encryption-encode', this._encodeHandler);
   }
 
   _toggleMainOption(e) {
@@ -34,21 +37,8 @@ class DemoPage extends ArcDemoPage {
 
   _demoStateHandler(e) {
     const state = e.detail.value;
-    switch (state) {
-      case 0:
-        this.outlined = false;
-        this.compatibility = false;
-        break;
-      case 1:
-        this.outlined = true;
-        this.compatibility = false;
-        break;
-      case 2:
-        this.outlined = false;
-        this.compatibility = true;
-        break;
-
-    }
+    this.outlined = state === 1;
+    this.compatibility = state === 2;
   }
 
   _fileExportHandler(e) {
@@ -69,13 +59,22 @@ class DemoPage extends ArcDemoPage {
     console.log(e.detail);
   }
 
+  _encodeHandler(e) {
+    e.preventDefault();
+    const { data, passphrase } = e.detail;
+    /* global CryptoJS */
+    const encrypted = CryptoJS.AES.encrypt(data, passphrase);
+    e.detail.result = Promise.resolve(encrypted.toString());
+  }
+
   _demoTemplate() {
     const {
       demoStates,
       darkThemeActive,
       compatibility,
       outlined,
-      customDestination
+      customDestination,
+      withEncrypt
     } = this;
     return html`
       <section class="documentation-section">
@@ -94,6 +93,7 @@ class DemoPage extends ArcDemoPage {
           <export-panel
             ?compatibility="${compatibility}"
             ?outlined="${outlined}"
+            ?withEncrypt="${withEncrypt}"
             slot="content">
             ${customDestination ? html`
             <anypoint-icon-item data-value="my-destination" slot="destination">
@@ -110,6 +110,14 @@ class DemoPage extends ArcDemoPage {
             @change="${this._toggleMainOption}"
           >
             Custom destination
+          </anypoint-checkbox>
+          <anypoint-checkbox
+            aria-describedby="mainOptionsLabel"
+            slot="options"
+            name="withEncrypt"
+            @change="${this._toggleMainOption}"
+          >
+            With encrypt
           </anypoint-checkbox>
         </arc-interactive-demo>
 

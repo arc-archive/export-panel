@@ -76,7 +76,15 @@ class ExportPanel extends LitElement {
   }
 
   render() {
-    const { destination, fileName, compatibility, outlined } = this;
+    const {
+      destination,
+      fileName,
+      compatibility,
+      outlined,
+      withEncrypt,
+      encryptFile,
+      passphrase
+    } = this;
     return html`
       <h2>Export data</h2>
       <section class="card">
@@ -84,7 +92,11 @@ class ExportPanel extends LitElement {
           .destination="${destination}"
           .fileName="${fileName}"
           ?compatibility="${compatibility}"
-          ?outlined="${outlined}">
+          ?outlined="${outlined}"
+          ?passphrase="${passphrase}"
+          ?encryptFile="${encryptFile}"
+          ?withEncrypt="${withEncrypt}"
+        >
           <slot name="destination" slot="destination"></slot>
         </export-form>
       </section>
@@ -109,7 +121,19 @@ class ExportPanel extends LitElement {
       /**
        * Enables outlined theme for inputs
        */
-      outlined: { type: Boolean }
+      outlined: { type: Boolean },
+      /**
+       * When set it renders encryption options.
+       */
+      withEncrypt: { type: Boolean },
+      /**
+       * When set the encrypt file option is enabled.
+       */
+      encryptFile: { type: Boolean },
+      /**
+       * Encryption passphrase
+       */
+      passphrase: { type: String },
     };
   }
 

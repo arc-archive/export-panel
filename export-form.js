@@ -21,6 +21,7 @@ import '@anypoint-web-components/anypoint-item/anypoint-item.js';
 import '@anypoint-web-components/anypoint-item/anypoint-icon-item.js';
 import '@anypoint-web-components/anypoint-button/anypoint-button.js';
 import '@anypoint-web-components/anypoint-input/anypoint-input.js';
+import '@anypoint-web-components/anypoint-input/anypoint-masked-input.js';
 import '@polymer/paper-toast/paper-toast.js';
 /**
  * Export data form with export flow logic.
@@ -188,7 +189,8 @@ class ExportForm extends LitElement {
       ?compatibility="${compatibility}"
       ?outlined="${outlined}"
       .value="${fileName}"
-      @value-changed="${this._fileNameHandler}">
+      name="fileName"
+      @value-changed="${this._inputHandler}">
       <label slot="label">Export location</label>
     </anypoint-input>`;
   }
@@ -214,12 +216,13 @@ class ExportForm extends LitElement {
         ${this._fileInputTemplate()}
       </section>
 
-      <h3>Data to export</h3>
       <iron-form>
         <form enctype="application/json">
+          <h3>Data to export</h3>
           ${this._exportItemsTemplate()}
         </form>
       </iron-form>
+      ${this._encryptionTemplate()}
 
       <div class="actions">
         <anypoint-button
@@ -237,6 +240,44 @@ class ExportForm extends LitElement {
       <paper-toast id="exportError" class="error-toast"></paper-toast>
       <paper-toast id="exportComplete" text="Export complete"></paper-toast>
     `;
+  }
+
+  _encryptionTemplate() {
+    if (!this.withEncrypt) {
+      return '';
+    }
+    const {
+      encryptFile,
+      compatibility
+    } = this;
+    return html`
+    <h3>Export options</h3>
+    <anypoint-checkbox
+      .checked="${encryptFile}"
+      name="encryptFile"
+      @checked-changed="${this._checkedChanged}"
+      ?compatibility="${compatibility}"
+      title="Encrypts the file with password so it is not store in plain text."
+    >
+      Encrypt file
+    </anypoint-checkbox>
+    ${this._encyptionPasswordTemplate()}`;
+  }
+
+  _encyptionPasswordTemplate() {
+    if (!this.encryptFile) {
+      return;
+    }
+    const {
+      passphrase
+    } = this;
+    return html`<anypoint-masked-input
+      name="passphrase"
+      .value="${passphrase}"
+      @value-changed="${this._inputHandler}"
+    >
+      <label slot="label">Encryption passphrase</label>
+    </anypoint-masked-input>`;
   }
 
   static get properties() {
@@ -261,7 +302,19 @@ class ExportForm extends LitElement {
       /**
        * Enables outlined theme for inputs
        */
-      outlined: { type: Boolean }
+      outlined: { type: Boolean },
+      /**
+       * When set the encrypt file option is enabled.
+       */
+      encryptFile: { type: Boolean },
+      /**
+       * Encryption passphrase
+       */
+      passphrase: { type: String },
+      /**
+       * When set it renders encryption options.
+       */
+      withEncrypt: { type: Boolean },
     };
   }
 
@@ -398,6 +451,10 @@ class ExportForm extends LitElement {
       provider: this.destination,
       file: this.fileName || this.generateFileName()
     };
+    if (this.encryptFile) {
+      options.encrypt = true;
+      options.passphrase = this.passphrase || '';
+    }
     const e = new CustomEvent('arc-data-export', {
       bubbles: true,
       composed: true,
@@ -425,12 +482,18 @@ class ExportForm extends LitElement {
     this.destination = e.detail.value;
   }
 
-  _fileNameHandler(e) {
-    this.fileName = e.detail.value;
-  }
-
   _dropdownOpenedHandler(e) {
     e.target.setAttribute('aria-expanded', String(e.detail.value));
+  }
+
+  _checkedChanged(e) {
+    const { name, checked } = e.target;
+    this[name] = checked;
+  }
+
+  _inputHandler(e) {
+    const { name, value } = e.target;
+    this[name] = value;
   }
   /**
    * @event arc-data-export
