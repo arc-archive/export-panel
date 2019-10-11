@@ -194,6 +194,7 @@ describe('<export-form>', () => {
       assert.isTrue(types['url-history']);
       assert.isTrue(types.websocket);
       assert.isTrue(types.variables);
+      assert.isTrue(types['client-certificates']);
     });
 
     it('Exports to drive', async () => {

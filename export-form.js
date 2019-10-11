@@ -205,6 +205,7 @@ class ExportForm extends LitElement {
     <anypoint-checkbox name="websocket" checked>Web sockets history</anypoint-checkbox>
     <anypoint-checkbox name="variables" checked>Variables data</anypoint-checkbox>
     <anypoint-checkbox name="host-rules" checked>Host rules</anypoint-checkbox>
+    <anypoint-checkbox name="client-certificates" checked>Client certificates</anypoint-checkbox>
     `;
   }
 
