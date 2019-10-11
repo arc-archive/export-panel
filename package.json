@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@advanced-rest-client/arc-icons": "^3.0.2",
-    "@anypoint-web-components/anypoint-button": "^1.0.10",
+    "@anypoint-web-components/anypoint-button": "^1.0.12",
     "@anypoint-web-components/anypoint-checkbox": "^1.0.1",
     "@anypoint-web-components/anypoint-dropdown-menu": "^0.1.12",
     "@anypoint-web-components/anypoint-input": "^0.2.6",
